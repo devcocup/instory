@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:instory/bloc/block_provider.dart';
 import 'package:instory/bloc/stories_bloc.dart';
 import 'package:instory/models.dart';
+import 'package:instory/screens/stories_profile.dart';
 import 'package:instory/screens/widgets/user_profile_widget.dart';
 import 'package:instory/utils/api.dart';
 import 'package:instory/utils/colors.dart';

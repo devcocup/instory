@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:instory/bloc/block_provider.dart';
 import 'package:instory/bloc/stories_bloc.dart';
 import 'package:instory/models.dart';
+import 'package:instory/screens/widgets/stories_reel.dart';
+import 'package:instory/screens/widgets/stories_tray.dart';
 import 'package:instory/screens/widgets/user_profile_widget.dart';
 
 class StoriesProfile extends StatelessWidget {
