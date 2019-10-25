@@ -37,7 +37,7 @@ class _Story extends State<Story> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: true,
+      bottom: false,
       top: false,
       child: Scaffold(
         key: _scaffoldkey,
