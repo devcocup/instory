@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:instory/models.dart';
+import 'package:instory/screens/widgets/user_profile_widget.dart';
+import 'package:instory/utils/api.dart';
 import 'package:instory/utils/colors.dart';
 import 'package:instory/wave_clipper.dart';
 
@@ -10,11 +14,11 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> with TickerProviderStateMixin {
   bool loading = false;
   bool fetchingStories = false;
-  // ApiResponse profile;
+  ApiResponse profile;
   TextEditingController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  // HighLightResponse _highLightResponse;
+  HighLightsResponse _highLightsResponse;
 
   @override
   void initState() {
@@ -28,7 +32,7 @@ class _Home extends State<Home> with TickerProviderStateMixin {
     double waveSection = totalHeight/2.5;
 
     return SafeArea(
-      bottom: true,
+      bottom: false,
       top: false,
       child: Scaffold(
         key: _scaffoldKey,
@@ -112,7 +116,7 @@ class _Home extends State<Home> with TickerProviderStateMixin {
                             elevation: 0,
                             backgroundColor: instaRed,
                             onPressed: () {
-                              // fetchData(context);
+                              fetchData(context);
                             },
                             child: loading ?
                                    CircularProgressIndicator(
@@ -131,28 +135,27 @@ class _Home extends State<Home> with TickerProviderStateMixin {
                 ),
                 Container(
                   height: 200,
-                  // child: profile != null
-                  //        ? Dismissible(
-                  //           background: Container(color: Colors.grey[200],),
-                  //           onDismissed: (DismissDirection dis) {
-                  //             setState(() {
-                  //               profile = null;
-                  //               loading = false;
-                  //               fetchingStories = false;
-                  //               _highLightsResponse = null;
-                  //             });
-                  //           },
-                  //           key: Key("_KEY_"),
-                  //           movementDuration: Duration(microseconds: 120),
-                  //           child: InkWell(
-                  //             onTap: () {
-                  //               routeProfile();
-                  //             },
-                  //             child: Hero(child: UserProfile(profile), tag: profile.id,),
-                  //           ),
-                  //        )
-                        //  : Container(),
-                  child: Container(),
+                  child: profile != null
+                         ? Dismissible(
+                            background: Container(color: Colors.grey[200],),
+                            onDismissed: (DismissDirection dis) {
+                              setState(() {
+                                profile = null;
+                                loading = false;
+                                fetchingStories = false;
+                                _highLightsResponse = null;
+                              });
+                            },
+                            key: Key("_KEY_"),
+                            movementDuration: Duration(microseconds: 120),
+                            child: InkWell(
+                              onTap: () {
+                                routeToProfile();
+                              },
+                              child: Hero(child: UserProfile(profile), tag: profile.id,),
+                            ),
+                         )
+                         : Container(),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 12),
@@ -179,5 +182,78 @@ class _Home extends State<Home> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  fetchData(BuildContext context) async {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    String username = _controller.text;
+    if (username.trim().length == 0) {
+      return;
+    }
+
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      profile = await Api.getProfile(username);
+      setState(() {
+        loading = false;
+        fetchingStories = true;
+      });
+
+      _highLightsResponse = await Api.getHighLights(username);
+      setState(() {
+        fetchingStories = false;
+      });
+
+      routeToProfile();
+
+    } catch (error) {
+      setState(() {
+        loading = false;
+        fetchingStories = false;
+      });
+
+      if (error is NotFoundException) {
+        showSnackBar("No account found");
+      } else {
+        showSnackBar("Unable to load data from api, please check your internet.");
+      }
+    }
+  }
+
+  routeToProfile() {
+    var st = BlocProvider(
+      bloc: StoriesBloc(profile, _highLightsResponse),
+      child: StoriesProfile(profile),
+    );
+
+    Navigator.of(context).push(
+      PageRouteBuilder<Null>(
+        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+          return AnimatedBuilder(
+            animation: animation,
+            builder: (BuildContext context, Widget child) {
+              return Opacity(
+                opacity: animation.value,
+                child: st,
+              );
+            },
+          );
+        },
+        transitionDuration: Duration(microseconds: 600)
+      )
+    );
+  }
+
+  showSnackBar(string) {
+    final snackBar = SnackBar(content: Text(string));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
