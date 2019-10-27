@@ -1,16 +1,35 @@
-# instory
+# Instory 📽
 
-A new Flutter project.
 
-## Getting Started
+<h4 align="center">
+ 🦋Beautiful flutter app for downloading Instagram stories 🚀
+</h4>
+ 
+<br/>
+<br/> 
+ 
 
-This project is a starting point for a Flutter application.
+<div style="text-align: center"><table><tr>
+  <td style="text-align: center">
+     <img src="screenshots/demo.gif" width="600"/></a>
+</td>
+<td style="text-align: center">
+ <img src="screenshots/shot_1.jpg" width="610" />
+ </td>
+<td style="text-align: center">
+ <img src="screenshots/shot_3.jpg" width="610"/>
+ </tr></table>
+ </div>
+ 
 
-A few resources to get you started if this is your first Flutter project:
+### Dependenices used
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- [video_player](https://pub.dartlang.org/packages/video_player)
+- [http](https://pub.dartlang.org/packages/http)
+- [dio](https://pub.dartlang.org/packages/dio)
+- [path_provider](https://pub.dartlang.org/packages/path_provider)
+- [permission_handler](https://pub.dartlang.org/packages/permission_handler)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
+For help getting started with Flutter, view   
+[online documentation](https://flutter.io/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
